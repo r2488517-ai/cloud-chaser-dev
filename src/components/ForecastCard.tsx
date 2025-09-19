@@ -29,29 +29,39 @@ const getWeatherIcon = (condition: string, size: string = "w-8 h-8") => {
 
 export const ForecastCard = ({ forecast }: ForecastCardProps) => {
   return (
-    <Card className="p-6 bg-card/80 backdrop-blur-glass border-glass shadow-soft">
-      <h3 className="text-xl font-bold mb-4 text-foreground">5-Day Forecast</h3>
-      <div className="space-y-3">
-        {forecast.map((day, index) => (
-          <div 
-            key={index}
-            className="flex items-center justify-between p-3 rounded-lg bg-glass border border-glass backdrop-blur-glass hover:bg-glass/50 transition-all duration-200"
-          >
-            <div className="flex items-center space-x-4">
-              {getWeatherIcon(day.condition)}
-              <div>
-                <p className="font-semibold text-foreground">{day.day}</p>
-                <p className="text-sm text-muted-foreground capitalize">{day.condition}</p>
+    <Card className="weather-card border-0">
+      <div className="p-6">
+        <h3 className="text-2xl font-bold text-foreground mb-6 flex items-center gap-2">
+          5-Day Forecast
+        </h3>
+        <div className="space-y-1">
+          {forecast.map((day, index) => {
+            const IconComponent = getWeatherIcon(day.condition);
+            return (
+              <div 
+                key={index} 
+                className="flex items-center justify-between p-4 rounded-xl hover:bg-muted/50 transition-colors duration-200 group"
+              >
+                <div className="flex items-center gap-4 flex-1">
+                  <div className="weather-icon group-hover:scale-110 transition-transform duration-200">
+                    {IconComponent}
+                  </div>
+                  <div>
+                    <p className="font-semibold text-foreground">{day.day}</p>
+                    <p className="text-sm text-muted-foreground capitalize">{day.condition}</p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xl font-bold text-foreground">{day.high}°</span>
+                    <span className="text-muted-foreground">/</span>
+                    <span className="text-lg text-muted-foreground">{day.low}°</span>
+                  </div>
+                </div>
               </div>
-            </div>
-            <div className="text-right">
-              <div className="flex items-center space-x-2">
-                <span className="font-bold text-foreground">{Math.round(day.high)}°</span>
-                <span className="text-muted-foreground">{Math.round(day.low)}°</span>
-              </div>
-            </div>
-          </div>
-        ))}
+            );
+          })}
+        </div>
       </div>
     </Card>
   );

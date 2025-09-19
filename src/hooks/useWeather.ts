@@ -5,10 +5,10 @@ interface WeatherData {
   location: string;
   temperature: number;
   condition: string;
-  description: string;
   humidity: number;
   windSpeed: number;
   visibility: number;
+  feelsLike: number;
   icon: string;
 }
 
@@ -37,27 +37,37 @@ export const useWeather = () => {
       // In a real app, you'd uncomment the API calls below and add your API key
       
       // Mock data for demonstration
+      const conditions = [
+        { condition: "sunny", temp: 25, humidity: 45, wind: 8, visibility: 15 },
+        { condition: "cloudy", temp: 18, humidity: 65, wind: 12, visibility: 8 },
+        { condition: "rainy", temp: 15, humidity: 85, wind: 15, visibility: 5 },
+        { condition: "clear", temp: 22, humidity: 50, wind: 6, visibility: 20 }
+      ];
+      
+      const selectedCondition = conditions[Math.floor(Math.random() * conditions.length)];
+      
       const mockWeatherData: WeatherData = {
-        location: location.includes(',') ? 'Current Location' : location,
-        temperature: Math.round(Math.random() * 30 + 5), // Random temp between 5-35°C
-        condition: ['Clear', 'Clouds', 'Rain', 'Snow'][Math.floor(Math.random() * 4)],
-        description: ['sunny', 'partly cloudy', 'light rain', 'overcast'][Math.floor(Math.random() * 4)],
-        humidity: Math.round(Math.random() * 50 + 30), // 30-80%
-        windSpeed: Math.round(Math.random() * 20 + 5), // 5-25 km/h
-        visibility: Math.round(Math.random() * 10 + 5), // 5-15 km
+        location: location.includes(',') ? 'Current Location' : location.charAt(0).toUpperCase() + location.slice(1),
+        temperature: selectedCondition.temp + Math.floor(Math.random() * 10) - 5,
+        condition: selectedCondition.condition,
+        humidity: selectedCondition.humidity + Math.floor(Math.random() * 20) - 10,
+        windSpeed: selectedCondition.wind + Math.floor(Math.random() * 8) - 4,
+        visibility: selectedCondition.visibility + Math.floor(Math.random() * 6) - 3,
+        feelsLike: selectedCondition.temp + Math.floor(Math.random() * 6) - 3,
         icon: '01d'
       };
 
-      const mockForecastData: ForecastDay[] = [
-        'Today', 'Tomorrow', 'Thursday', 'Friday', 'Saturday'
-      ].map((day, index) => ({
-        date: new Date(Date.now() + index * 24 * 60 * 60 * 1000).toISOString(),
-        day,
-        high: Math.round(Math.random() * 30 + 10),
-        low: Math.round(Math.random() * 15 + 5),
-        condition: ['Clear', 'Clouds', 'Rain', 'Snow'][Math.floor(Math.random() * 4)],
-        icon: '01d'
-      }));
+      const mockForecastData: ForecastDay[] = Array.from({ length: 5 }, (_, i) => {
+        const futureCondition = conditions[Math.floor(Math.random() * conditions.length)];
+        return {
+          date: new Date(Date.now() + i * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+          day: i === 0 ? 'Today' : new Date(Date.now() + i * 24 * 60 * 60 * 1000).toLocaleDateString('en-US', { weekday: 'short' }),
+          high: futureCondition.temp + Math.floor(Math.random() * 8),
+          low: futureCondition.temp - Math.floor(Math.random() * 8) - 5,
+          condition: futureCondition.condition,
+          icon: '01d'
+        };
+      });
 
       setWeather(mockWeatherData);
       setForecast(mockForecastData);

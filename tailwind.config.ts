@@ -59,6 +59,7 @@ export default {
         },
       },
       backgroundImage: {
+        'gradient-main': 'var(--gradient-main)',
         'gradient-sunny': 'var(--gradient-sunny)',
         'gradient-cloudy': 'var(--gradient-cloudy)',
         'gradient-rainy': 'var(--gradient-rainy)',

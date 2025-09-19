@@ -5,10 +5,10 @@ interface WeatherData {
   location: string;
   temperature: number;
   condition: string;
-  description: string;
   humidity: number;
   windSpeed: number;
   visibility: number;
+  feelsLike: number;
   icon: string;
 }
 
@@ -43,47 +43,58 @@ const getBackgroundGradient = (condition: string) => {
 };
 
 export const WeatherCard = ({ weather }: WeatherCardProps) => {
+  const IconComponent = getWeatherIcon(weather.condition);
+  const gradientClass = getBackgroundGradient(weather.condition);
+
   return (
-    <Card className={`p-8 text-white border-glass backdrop-blur-glass shadow-weather ${getBackgroundGradient(weather.condition)} transition-all duration-500 hover:scale-105`}>
-      <div className="text-center mb-6">
-        <h2 className="text-2xl font-bold mb-2">{weather.location}</h2>
-        <div className="flex items-center justify-center mb-4">
-          {getWeatherIcon(weather.condition)}
-        </div>
-        <div className="text-5xl font-bold mb-2">{Math.round(weather.temperature)}°C</div>
-        <p className="text-lg opacity-90 capitalize">{weather.description}</p>
-      </div>
-      
-      <div className="grid grid-cols-2 gap-4">
-        <div className="flex items-center space-x-2 bg-glass border border-glass rounded-lg p-3 backdrop-blur-glass">
-          <Droplets className="w-5 h-5" />
-          <div>
-            <p className="text-sm opacity-75">Humidity</p>
-            <p className="font-semibold">{weather.humidity}%</p>
-          </div>
-        </div>
+    <Card className="weather-card border-0 overflow-hidden group hover:shadow-weather transition-all duration-500">
+      <div className={`${gradientClass} p-8 text-white relative`}>
+        {/* Background decoration */}
+        <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent"></div>
         
-        <div className="flex items-center space-x-2 bg-glass border border-glass rounded-lg p-3 backdrop-blur-glass">
-          <Wind className="w-5 h-5" />
-          <div>
-            <p className="text-sm opacity-75">Wind Speed</p>
-            <p className="font-semibold">{weather.windSpeed} km/h</p>
+        <div className="relative">
+          <div className="flex items-start justify-between mb-8">
+            <div className="space-y-2">
+              <h2 className="text-3xl md:text-4xl font-bold tracking-tight">{weather.location}</h2>
+              <p className="text-white/90 text-lg capitalize font-medium">{weather.condition}</p>
+              <p className="text-white/70 text-sm">
+                {new Date().toLocaleDateString('en-US', { 
+                  weekday: 'long', 
+                  year: 'numeric', 
+                  month: 'long', 
+                  day: 'numeric' 
+                })}
+              </p>
+            </div>
+            <div className="weather-icon group-hover:scale-110 transition-transform duration-300">
+              {IconComponent}
+            </div>
           </div>
-        </div>
-        
-        <div className="flex items-center space-x-2 bg-glass border border-glass rounded-lg p-3 backdrop-blur-glass">
-          <Eye className="w-5 h-5" />
-          <div>
-            <p className="text-sm opacity-75">Visibility</p>
-            <p className="font-semibold">{weather.visibility} km</p>
+          
+          <div className="mb-8">
+            <div className="flex items-baseline gap-2">
+              <span className="text-7xl md:text-8xl font-thin tracking-tight">{weather.temperature}</span>
+              <span className="text-3xl font-light text-white/80">°C</span>
+            </div>
+            <p className="text-white/70 mt-2">Feels like {weather.feelsLike}°C</p>
           </div>
-        </div>
-        
-        <div className="flex items-center space-x-2 bg-glass border border-glass rounded-lg p-3 backdrop-blur-glass">
-          <Thermometer className="w-5 h-5" />
-          <div>
-            <p className="text-sm opacity-75">Feels like</p>
-            <p className="font-semibold">{Math.round(weather.temperature + Math.random() * 4 - 2)}°C</p>
+          
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+            <div className="text-center space-y-2">
+              <Droplets className="w-6 h-6 mx-auto text-white/80" />
+              <p className="text-sm text-white/70 font-medium">Humidity</p>
+              <p className="text-xl font-semibold">{weather.humidity}%</p>
+            </div>
+            <div className="text-center space-y-2">
+              <Wind className="w-6 h-6 mx-auto text-white/80" />
+              <p className="text-sm text-white/70 font-medium">Wind Speed</p>
+              <p className="text-xl font-semibold">{weather.windSpeed} km/h</p>
+            </div>
+            <div className="text-center space-y-2 md:col-span-1 col-span-2">
+              <Eye className="w-6 h-6 mx-auto text-white/80" />
+              <p className="text-sm text-white/70 font-medium">Visibility</p>
+              <p className="text-xl font-semibold">{weather.visibility} km</p>
+            </div>
           </div>
         </div>
       </div>
